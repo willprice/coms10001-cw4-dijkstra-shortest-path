@@ -5,6 +5,12 @@ public class CommandLineProgram {
 	}
 	
 	public boolean isPart(int partNumber, String[] args) {
+		if (args[0].equals("-p" + partNumber))
+			return true;			
 		return false;
+	}
+	
+	public void println(String message) {
+		System.out.println(message);
 	}
 }
