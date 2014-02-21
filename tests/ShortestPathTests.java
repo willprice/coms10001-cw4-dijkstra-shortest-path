@@ -20,7 +20,7 @@ public class ShortestPathTests {
 	@SuppressWarnings("unused")
 	private Object[] unweightedGraphs() {
 		return $(
-				NGraph.createGraph(new Object[][]{{"1", "2", 1.0}})
+				$(1, NGraph.createGraph(new Object[][]{{"1", "2", 1.0}}))
 				);
 	}
 
