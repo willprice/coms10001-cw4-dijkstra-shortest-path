@@ -9,7 +9,6 @@ import java.util.List;
  * more important as they define the structure of the graph. 
  */
 public class Graph
-public class NGraph extends Graph {
 {
     private List<Node> nodes;
     private List<Edge> edges;

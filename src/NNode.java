@@ -1,8 +1,9 @@
 
-public class NNode extends Node {
+public class NNode {
+	private Node node;
 
-	public NNode(String id) {
-		super(id);
+	public NNode(Node node) {
+		this.node = node;
 	}
 
 }

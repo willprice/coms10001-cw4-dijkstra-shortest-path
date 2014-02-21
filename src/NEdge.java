@@ -1,7 +1,17 @@
 
-public class NEdge extends Edge {
+public class NEdge {
 
-	public NEdge(String id1, String id2, double weight, EdgeType type) {
-		super(id1, id2, weight, type);
+	private Edge edge;
+	
+	public NEdge(Edge edge) {
+		this.edge = edge;
+	}
+
+	public void setWeight(double weight) {
+		edge.weight = weight;
+	}
+
+	public double weight() {
+		return edge.weight();
 	}
 }

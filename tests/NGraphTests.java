@@ -23,28 +23,20 @@ public class NGraphTests {
 	public void testAllWeightsAreChangedToOne(NGraph graph) {
 		if (graph == null) fail("Graph is null");
 		graph.changeAllWeights(1);
-		for (Edge edge : graph.edges())
+		for (NEdge edge : graph.edges())
 			assertEquals(1, edge.weight(), maxError);
 	}
-
 	@SuppressWarnings("unused")
 	private Object[] exampleGraphs() {
 		return $(createGraph(new Object[][]{{"1", "2", 0.5}}));
 	}
 	
-	private NEdge createEdge(String id1, String id2, double weight) {
-		Edge.EdgeType defaultEdgeType = Edge.EdgeType.Bus;
-		return createEdge(id1, id2, weight, defaultEdgeType);
-	}
-	
-	private NEdge createEdge(String id1, String id2, double weight, Edge.EdgeType type) {
-		return new NEdge(id1, id2, weight, type);
-	}
 	
 	private NGraph createGraph(Object[][] edges) {
-		NGraph graph = new NGraph();
+		NGraph graph = new NGraph(new Graph());
 		for (Object[] edgeInfo : edges) {
 			if (edgeInfo[0] == null) return null;
+			
 			String startNodeId = (String) edgeInfo[0];
 			String endNodeId = (String) edgeInfo[1];
 			double weight = (double) edgeInfo[2];
@@ -59,11 +51,16 @@ public class NGraphTests {
 		return graph;
 	}
 	
-	private NNode createNode(String id) {
-		return new NNode(id);
+	private NEdge createEdge(String id1, String id2, double weight) {
+		Edge.EdgeType defaultEdgeType = Edge.EdgeType.Bus;
+		return createEdge(id1, id2, weight, defaultEdgeType);
 	}
-
-	private NGraph createGraph(List<Edge> edges, List<Node> nodes) {
-		return new NGraph(edges, nodes);
+	
+	private NEdge createEdge(String id1, String id2, double weight, Edge.EdgeType type) {
+		return new NEdge(new Edge(id1, id2, weight, type));
+	}
+	
+	private NNode createNode(String id) {
+		return new NNode(new Node(id));
 	}
 }
