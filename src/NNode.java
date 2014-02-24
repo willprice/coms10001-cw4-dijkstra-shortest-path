@@ -6,4 +6,8 @@ public class NNode {
 		this.node = node;
 	}
 
+	public String id() {
+		return node.name();
+	}
+
 }

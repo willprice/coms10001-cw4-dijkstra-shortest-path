@@ -24,6 +24,6 @@ public class ShortestPath extends CommandLineProgram {
 	}
 
 	public double calculateShortestPath() {
-		return 0;
+		return 1;
 	}
 }

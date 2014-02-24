@@ -1,16 +1,12 @@
 import static org.junit.Assert.*;
 
-import java.util.List;
-
 import junitparams.Parameters;
 
 import org.junit.Test;
 
 import static junitparams.JUnitParamsRunner.$;
 import junitparams.JUnitParamsRunner;
-import junitparams.Parameters;
 
-import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(JUnitParamsRunner.class)

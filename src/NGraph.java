@@ -52,8 +52,12 @@ public class NGraph {
 			String endNodeId = (String) edgeInfo[1];
 			double weight = (double) edgeInfo[2];
 			
-			NNode startNode = graph.createNode(startNodeId);
-			NNode endNode = graph.createNode(endNodeId);
+			NNode startNode = null;
+			NNode endNode = null;
+			if(graph.findNodeInGraph(startNodeId) == null)
+				startNode = graph.createNode(startNodeId);
+			if (graph.findNodeInGraph(endNodeId) == null)
+				endNode = graph.createNode(endNodeId);
 			
 			NEdge edge = graph.createEdge(startNodeId, endNodeId, weight);
 			graph.add(startNode, endNode);
@@ -61,8 +65,15 @@ public class NGraph {
 		}
 		return graph;
 	}
+	private NNode findNodeInGraph(String nodeId) {
+		for (NNode node : nodes) {
+			if (nodeId.equals(node.id()))
+				return node;
+		}
+		return null;
+	}
 
-	public NEdge createEdge(String id1, String id2, double weight) {
+	private NEdge createEdge(String id1, String id2, double weight) {
 		Edge.EdgeType defaultEdgeType = Edge.EdgeType.Bus;
 		return createEdge(id1, id2, weight, defaultEdgeType);
 	}
@@ -72,7 +83,7 @@ public class NGraph {
 		return new NEdge(new Edge(id1, id2, weight, edgeType));
 	}
 
-	public NNode createNode(String id) {
+	private NNode createNode(String id) {
 		return new NNode(new Node(id));
 	}
 	
