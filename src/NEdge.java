@@ -14,4 +14,13 @@ public class NEdge {
 	public double weight() {
 		return edge.weight();
 	}
+	
+	public NNode connectedTo(NNode node) {
+		NNode connectedNode = new NNode(edge.connectedTo(node.id()));
+		return connectedNode;
+	}
+	
+	public boolean connectsNode(NNode node) {
+		return edge.connectsNode(node.id());
+	}
 }

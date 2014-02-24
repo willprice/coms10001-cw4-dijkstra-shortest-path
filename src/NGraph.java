@@ -43,7 +43,7 @@ public class NGraph {
 		edges.add(edge);
 	}
 
-	public static NGraph createGraph(Object[][] edgeInfoArray) {
+	public static NGraph createGraph(Object[]...edgeInfoArray) {
 		NGraph graph = new NGraph();
 		for (Object[] edgeInfo :  edgeInfoArray) {
 			if (edgeInfo[0] == null) return null;
@@ -85,6 +85,21 @@ public class NGraph {
 
 	private NNode createNode(String id) {
 		return new NNode(new Node(id));
+	}
+
+	public List<NNode> nodes() {
+		return nodes;
+	}
+
+	public List<NNode> findNeighbours(NNode node) {
+		List<NNode> neighbours = new ArrayList<>();
+		
+		for (NEdge edge : edges) {
+			if (edge.connectsNode(node)) {
+				neighbours.add(edge.connectedTo(node));
+			}
+		}
+		return neighbours;
 	}
 	
 }
