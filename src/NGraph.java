@@ -52,11 +52,11 @@ public class NGraph {
 			String endNodeId = (String) edgeInfo[1];
 			double weight = (double) edgeInfo[2];
 			
-			NNode startNode = null;
-			NNode endNode = null;
-			if(graph.findNodeInGraph(startNodeId) == null)
+			NNode startNode = graph.findNodeInGraph(startNodeId);
+			NNode endNode = graph.findNodeInGraph(endNodeId);
+			if(startNode == null)
 				startNode = graph.createNode(startNodeId);
-			if (graph.findNodeInGraph(endNodeId) == null)
+			if (endNode == null)
 				endNode = graph.createNode(endNodeId);
 			
 			NEdge edge = graph.createEdge(startNodeId, endNodeId, weight);
