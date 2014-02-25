@@ -11,13 +11,23 @@ public class NEdge {
 		edge.weight = weight;
 	}
 
+	public String id1() {
+		return edge.id1();
+	}
+	
+	public String id2() {
+		return edge.id2();
+	}
 	public double weight() {
 		return edge.weight();
 	}
 	
 	public NNode connectedTo(NNode node) {
-		NNode connectedNode = new NNode(edge.connectedTo(node.id()));
-		return connectedNode;
+		String connectedNodeId = edge.connectedTo(node.id());
+		if (connectedNodeId != null)
+			return new NNode(connectedNodeId);
+		else
+			return null;
 	}
 	
 	public boolean connectsNode(NNode node) {

@@ -46,6 +46,68 @@ public class ShortestPathTests {
 				  NGraph.createGraph(new Object[]{"1", "2", 1.0}, new Object[]{"2", "3", 1.0}), new NNode("1"))
 				);
 	}
+	
+	@Test
+	@Parameters
+	public void tentativeDistancesToNodes(Map<NNode, Double> expectedDistances, NGraph graph, NNode currentNode) throws Exception {
+		ShortestPath shortestPath = createShortestPath(graph, null, null);
+		shortestPath.calculateTentativeDistancesToNodes(currentNode);
+		assertEquals(expectedDistances, shortestPath.getTentativeDistancesToNodes());
+	}
+	@SuppressWarnings("unused")
+	private Object[] parametersForTentativeDistancesToNodes() {
+		return $(
+				$(createHashMap(new Object[]{"1", 0.0}, new Object[]{"2", 1.0}),
+				  NGraph.createGraph(new Object[]{"1", "2", 1.0}),
+				  new NNode("1")),
+				$(createHashMap(new Object[]{"1", 0.0}, new Object[]{"2", 2.0}),
+				  NGraph.createGraph(new Object[]{"1", "2", 2.0}),
+				  new NNode("1")),
+				$(createHashMap(new Object[]{"1", 0.0}, new Object[]{"2", 1.0}, new Object[]{"3", 1.0}),
+				  NGraph.createGraph(new Object[]{"1", "2", 1.0}, new Object[]{"1", "3", 1.0}),
+				  new NNode("1")),
+				$(createHashMap(new Object[]{"1", 0.0}, new Object[]{"2", 1.0}, new Object[]{"3", Double.POSITIVE_INFINITY}),
+				  NGraph.createGraph(new Object[]{"1", "2", 1.0}, new Object[]{"2", "3", 1.0}),
+				  new NNode("1")),
+				$(createHashMap(new Object[]{"1", 0.0}, new Object[]{"2", 1.0}, 
+						        new Object[]{"3", 1.0}, new Object[]{"4", Double.POSITIVE_INFINITY}),
+				  NGraph.createGraph(new Object[]{"1", "2", 1.0}, new Object[]{"1", "3", 1.0}, new Object[]{"3", "4", 1.0}),
+				  new NNode("1"))
+				);
+	}
+	
+	@Test
+	public void updateCurrentBestEstimatesInFirstIteration() throws Exception {
+		NNode startNode = new NNode("1");
+		NNode currentNode = startNode;
+		NGraph graph = NGraph.createGraph(new Object[]{"1", "2", 1.0}, new Object[]{"1", "3", 1.0}, new Object[]{"2", "3", 1.0});
+		Map<NNode, Double> expectedCurrentBestEstimate = createHashMap(new Object[]{"1", 0.0}, new Object[]{"2", 1.0},
+																	   new Object[]{"3", 1.0});
+		ShortestPath shortestPath = createShortestPath(graph, startNode, null);
+		shortestPath.updateCurrentBestEstimates(currentNode);
+		assertEquals(expectedCurrentBestEstimate, shortestPath.getCurrentBestEstimates());
+	}
+
+	@Test
+	public void updateCurrentBestEstimatesInSecondIteration() throws Exception {
+		NNode startNode = new NNode("1");
+		NNode currentNode = startNode;
+		NGraph graph = NGraph.createGraph(new Object[]{"1", "2", 1.0}, new Object[]{"1", "3", 3.0}, new Object[]{"2", "3", 1.0});
+		Map<NNode, Double> expectedCurrentBestEstimate = createHashMap(new Object[]{"1", 0.0}, new Object[]{"2", 1.0},
+																	   new Object[]{"3", 2.0});
+		ShortestPath shortestPath = createShortestPath(graph, startNode, null);
+		
+		shortestPath.updateCurrentBestEstimates(currentNode);
+		shortestPath.updateCurrentBestEstimates(currentNode);
+		
+		assertEquals(expectedCurrentBestEstimate, shortestPath.getCurrentBestEstimates());
+	}
+	
+	private ShortestPath createShortestPath(NGraph graph, NNode startNode, NNode endNode) {
+		ShortestPath shortestPath = new ShortestPath(graph, startNode, endNode);
+		return shortestPath;
+	}
+	
 	private Map<NNode, Double> createHashMap(Object[]...hashMapEntries) {
 		Map<NNode, Double> map = new HashMap<>();
 		for (Object[] entry : hashMapEntries) {
@@ -55,21 +117,5 @@ public class ShortestPathTests {
 			map.put(node, expectedBestDistanceEstimate);
 		}
 		return map;
-	}
-	
-//	@Test
-//	@Parameters
-//	public void tentativeDistancesToNodes(Map<NNode, Double> expectedDistances, NGraph graph, NNode currentNode) throws Exception {
-//		assertEquals(expectedDistances, createShortestPath(graph, null, null).calculateTentativeDistancesToNodes(currentNode));
-//	}
-//	private Object[] parametersForTentativeDistancesToNodes() {
-//		return $(
-//				$(createHashMap())
-//				);
-//	}
-	
-	private ShortestPath createShortestPath(NGraph graph, NNode startNode, NNode endNode) {
-		ShortestPath shortestPath = new ShortestPath(graph, startNode, endNode);
-		return shortestPath;
 	}
 }

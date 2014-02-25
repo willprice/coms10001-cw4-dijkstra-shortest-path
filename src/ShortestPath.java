@@ -11,6 +11,7 @@ public class ShortestPath extends CommandLineProgram {
 	private NNode startNode;
 	private NNode endNode;
 	private List<NNode> unvisitedNodes;
+	private Map<NNode, Double> tentativeDistancesToNodes;
 
 	public ShortestPath(NGraph graph) {
 		this.graph = graph;
@@ -23,6 +24,7 @@ public class ShortestPath extends CommandLineProgram {
 		this.startNode = startNode;
 		this.endNode = endNode;
 		unvisitedNodes.remove(startNode);
+		assignInitialDistances();
 	}
 
 	public static void main(String[] args) {
@@ -55,6 +57,32 @@ public class ShortestPath extends CommandLineProgram {
 	}
 
 	public Map<NNode, Double> calculateTentativeDistancesToNodes(NNode currentNode) {
-		return new HashMap<>();
+		tentativeDistancesToNodes = new HashMap<>();
+		for (NEdge edge : graph.edges()) {
+			NNode oppositeNode = edge.connectedTo(currentNode);
+			if (oppositeNode != null)
+				tentativeDistancesToNodes.put(oppositeNode, edge.weight());
+			else {
+				updateCurrentBestDistanceForNodeNotConnectedToCurrentNode(new NNode(edge.id1()));
+				updateCurrentBestDistanceForNodeNotConnectedToCurrentNode(new NNode(edge.id2()));
+			}
+		}
+		tentativeDistancesToNodes.put(currentNode, 0.0);
+		return tentativeDistancesToNodes;
+	}
+	
+	public Map<NNode, Double> getTentativeDistancesToNodes() {
+		return tentativeDistancesToNodes;
+	}
+
+	private void updateCurrentBestDistanceForNodeNotConnectedToCurrentNode(
+			NNode node) {
+		Double currentBestDistance = tentativeDistancesToNodes.get(node);
+		if (currentBestDistance == null || currentBestDistance == Double.POSITIVE_INFINITY)
+			tentativeDistancesToNodes.put(node, Double.POSITIVE_INFINITY);
+	}
+
+	public void updateCurrentBestEstimates(NNode currentNode) {
+		currentBestEstimates = calculateTentativeDistancesToNodes(currentNode);
 	}
 }
