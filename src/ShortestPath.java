@@ -10,7 +10,7 @@ public class ShortestPath extends CommandLineProgram {
 	private Map<NNode, Double> currentBestEstimates;
 	private NNode startNode;
 	private NNode endNode;
-	private List<NNode> unvisitedNodes;
+	public List<NNode> unvisitedNodes;
 	private Map<NNode, Double> tentativeDistancesToNodes;
 
 	public ShortestPath(NGraph graph) {
@@ -23,7 +23,6 @@ public class ShortestPath extends CommandLineProgram {
 		this(graph);
 		this.startNode = startNode;
 		this.endNode = endNode;
-		unvisitedNodes.remove(startNode);
 		assignInitialDistances();
 	}
 
@@ -38,12 +37,22 @@ public class ShortestPath extends CommandLineProgram {
 		}
 		ShortestPath program = new ShortestPath(new NGraph(reader.graph()));
 		if (program.isPart(1, args)) {
-			program.println("Part 1");
+			NNode startNode = new NNode(args[2]);
+			NNode endNode = new NNode(args[3]);
+			
+			program = new ShortestPath(new NGraph(reader.graph()), startNode, endNode);
+			program.graph.changeAllWeights(1.0);
+			program.println("Number of moves: " + (int)program.calculateShortestPath());
 		}
 	}
 
 	public double calculateShortestPath() {
-		return 1;
+		while (!(unvisitedNodes.isEmpty())) {
+			NNode minimalBestEstimateNode = getUnvisitedNodeWithMinimalCurrentBestEstimate();
+			unvisitedNodes.remove(minimalBestEstimateNode);
+			updateCurrentBestEstimates(minimalBestEstimateNode);
+		}
+		return getCurrentBestEstimates().get(endNode);
 	}
 
 	public void assignInitialDistances() {
@@ -75,14 +84,29 @@ public class ShortestPath extends CommandLineProgram {
 		return tentativeDistancesToNodes;
 	}
 
-	private void updateCurrentBestDistanceForNodeNotConnectedToCurrentNode(
-			NNode node) {
+	private void updateCurrentBestDistanceForNodeNotConnectedToCurrentNode(NNode node) {
 		Double currentBestDistance = tentativeDistancesToNodes.get(node);
 		if (currentBestDistance == null || currentBestDistance == Double.POSITIVE_INFINITY)
 			tentativeDistancesToNodes.put(node, Double.POSITIVE_INFINITY);
 	}
 
 	public void updateCurrentBestEstimates(NNode currentNode) {
-		currentBestEstimates = calculateTentativeDistancesToNodes(currentNode);
+		Map<NNode, Double> tentativeDistances = calculateTentativeDistancesToNodes(currentNode);
+		Double bestEstimateForCurrentNode = currentBestEstimates.get(currentNode);
+		for (NNode node : unvisitedNodes) {
+			Double updatedBestEstimate = Math.min(currentBestEstimates.get(node), bestEstimateForCurrentNode + tentativeDistances.get(node));
+			currentBestEstimates.put(node, updatedBestEstimate);
+		}
 	}
+	
+	private NNode getUnvisitedNodeWithMinimalCurrentBestEstimate() {
+		NNode currentNodeWithMinimalBestEstimate = unvisitedNodes.get(0);
+		for (NNode node : unvisitedNodes) {
+				if (currentBestEstimates.get(node) < currentBestEstimates.get(currentNodeWithMinimalBestEstimate)) {
+					currentNodeWithMinimalBestEstimate = node;
+				}
+		}
+		return currentNodeWithMinimalBestEstimate;
+	}
+		
 }

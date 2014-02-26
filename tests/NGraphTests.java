@@ -35,7 +35,6 @@ public class NGraphTests {
 	public void findingNeighboursOfNodes(NGraph graph, List<NNode> expectedNeighbours, NNode node) throws Exception {
 		assertEquals(expectedNeighbours, graph.findNeighbours(node));
 	}
-	
 	private Object[] parametersForFindingNeighboursOfNodes() {
 		return $(
 				$(NGraph.createGraph(new Object[]{"1", "2", 1.0}), 
