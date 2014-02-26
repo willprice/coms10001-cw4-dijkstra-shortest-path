@@ -39,10 +39,16 @@ public class ShortestPath extends CommandLineProgram {
 		if (program.isPart(1, args)) {
 			NNode startNode = new NNode(args[2]);
 			NNode endNode = new NNode(args[3]);
-			
+
 			program = new ShortestPath(new NGraph(reader.graph()), startNode, endNode);
 			program.graph.changeAllWeights(1.0);
 			program.println("Number of moves: " + (int)program.calculateShortestPath());
+		} else if (program.isPart(2, args)) {
+			NNode startNode = new NNode(args[2]);
+			NNode endNode = new NNode(args[3]);
+
+			program = new ShortestPath(new NGraph(reader.graph()), startNode, endNode);
+			program.println(String.format("Distance Travelled: %.2fkm", program.calculateShortestPath()));
 		}
 	}
 

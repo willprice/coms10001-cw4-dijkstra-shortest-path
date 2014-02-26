@@ -36,6 +36,21 @@ public class ShortestPathTests {
 	
 	@Test
 	@Parameters
+	public void shortestPathOnWeightedGraphs(double expectedLength, NGraph graph, NNode endNode) throws Exception {
+		ShortestPath shortestPath = new ShortestPath(graph, new NNode("1"), endNode);
+		assertEquals(expectedLength, shortestPath.calculateShortestPath(), maxError);
+	}
+	@SuppressWarnings("unused")
+	private Object[] parametersForShortestPathOnWeightedGraphs() {
+		return $(
+				$(1.2, NGraph.createGraph(new Object[]{"1", "2", 1.2}), new NNode("2")),
+				$(2.4, NGraph.createGraph(new Object[]{"1", "2", 1.3}, new Object[]{"2", "3", 1.1}), new NNode("3"))
+				);
+	}
+	
+	
+	@Test
+	@Parameters
 	public void initialDistanceValues(Map<NNode, Double> expectedDistances, NGraph graph, NNode startNode) throws Exception {
 		ShortestPath shortestPath = createShortestPath(graph, startNode, null);
 		shortestPath.assignInitialDistances();
