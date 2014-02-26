@@ -1,5 +1,7 @@
+import java.awt.print.Printable;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,11 +14,13 @@ public class ShortestPath extends CommandLineProgram {
 	private NNode endNode;
 	public List<NNode> unvisitedNodes;
 	private Map<NNode, Double> tentativeDistancesToNodes;
+	private Map<NNode, NNode> previous;
 
 	public ShortestPath(NGraph graph) {
 		this.graph = graph;
 		currentBestEstimates = new HashMap<>();
 		unvisitedNodes = new ArrayList<>(graph.nodes());
+		previous = new HashMap<>();
 	}
 
 	public ShortestPath(NGraph graph, NNode startNode, NNode endNode) {
@@ -49,6 +53,27 @@ public class ShortestPath extends CommandLineProgram {
 
 			program = new ShortestPath(new NGraph(reader.graph()), startNode, endNode);
 			program.println(String.format("Distance Travelled: %.2fkm", program.calculateShortestPath()));
+		} else if (program.isPart(3, args)) {
+			NNode startNode = new NNode(args[2]);
+			NNode endNode = new NNode(args[3]);
+			
+			program = new ShortestPath(new NGraph(reader.graph()), startNode, endNode);
+			Double endDistance = program.calculateShortestPath();
+			Map<NNode, NNode> previousMap = program.previous;
+			NNode target = endNode;
+			List<NNode> shortestPathNodesList = new ArrayList<>();
+			
+			while (previousMap.get(target) != null) {
+				shortestPathNodesList.add(target);
+				target = previousMap.get(target);
+			}
+			Collections.reverse(shortestPathNodesList);
+			program.print("Route: " + startNode.id());
+			for (NNode node : shortestPathNodesList) {
+				program.print(" " + node.id());
+			}
+			program.print("\n");
+			
 		}
 	}
 
@@ -101,6 +126,9 @@ public class ShortestPath extends CommandLineProgram {
 		Double bestEstimateForCurrentNode = currentBestEstimates.get(currentNode);
 		for (NNode node : unvisitedNodes) {
 			Double updatedBestEstimate = Math.min(currentBestEstimates.get(node), bestEstimateForCurrentNode + tentativeDistances.get(node));
+			if (bestEstimateForCurrentNode + tentativeDistances.get(node) < currentBestEstimates.get(node)) {
+				previous.put(node, currentNode);
+			}
 			currentBestEstimates.put(node, updatedBestEstimate);
 		}
 	}
